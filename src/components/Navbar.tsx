@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { searchUser } from "../features/userDetailSlice";
+import { searchUser } from "../redux/userDetailSlice";
+import { RootState } from "../app/store"; // Import RootState type
 
-const Navbar = () => {
-  const allusers = useSelector((state) => state.app.users);
+const Navbar: React.FC = () => {
+  const allusers = useSelector((state: RootState) => state.userDetail.users);
   const dispatch = useDispatch();
 
-  const [searchData, setSearchData] = useState("");
+  const [searchData, setSearchData] = useState<string>(""); 
 
   useEffect(() => {
     dispatch(searchUser(searchData));
-  }, [searchData]);
+  }, [dispatch, searchData]); // Include dispatch and searchData in the dependency array
 
   return (
     <div>
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <div className="container-fluid ">
           <h4 className="navbar-brand">RTK</h4>
-
           <div className="collapse navbar-collapse">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item">

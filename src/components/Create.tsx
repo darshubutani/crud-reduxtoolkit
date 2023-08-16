@@ -1,20 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, ChangeEvent, FormEvent } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { createUser } from "../features/userDetailSlice";
-
-const Create = () => {
-  const [users, setUsers] = useState({});
+import { createUser } from "../redux/userDetailSlice";
+import { AppDispatch } from "../app/store";
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  age: number;
+  gender: "Male" | "Female";
+}
+const Create: React.FC = () => {
+  const [users, setUsers] = useState<User>({
+    id: "",     
+    name: "",
+    email: "",
+    age: 0,
+    gender: "Male",
+  });
 
   const navigate = useNavigate();
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>(); 
 
-  const getUserData = (e) => {
+  const getUserData = (e: ChangeEvent<HTMLInputElement>) => {
     setUsers({ ...users, [e.target.name]: e.target.value });
   };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("users...", users);
     dispatch(createUser(users));
@@ -86,3 +98,6 @@ const Create = () => {
 };
 
 export default Create;
+
+
+

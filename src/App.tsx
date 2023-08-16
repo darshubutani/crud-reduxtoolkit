@@ -1,3 +1,4 @@
+import React from "react";
 import "./App.css";
 import Create from "./components/Create";
 import Navbar from "./components/Navbar";
@@ -11,9 +12,9 @@ function App() {
       <BrowserRouter>
         <Navbar />
         <Routes>
-          <Route exact path="/" element={<Create />} />
-          <Route exact path="/read" element={<Read />} />
-          <Route exact path="/edit/:id" element={<Update />} />
+          <Route path="/" element={<Create />} />
+          <Route path="/read" element={<Read />} />
+          <Route path="/edit/:id" element={<Update />} />
         </Routes>
       </BrowserRouter>
     </div>
