@@ -216,10 +216,17 @@ export const userDetail = createSlice({
         console.log("action.payload...", action.payload.users);
         const deletedGroupName = action.payload.group;
         const updatedUsers = state.users.map((user) => {
-          if (user.group && user.group.includes(deletedGroupName)) {
-            const updatedGroup = user.group.filter(
-              (groupName: any) => groupName !== deletedGroupName
-            );
+          // if (user.group && user.group.includes(deletedGroupName)) {
+          //   const updatedGroup = user.group.filter(
+          //     (groupName: any) => groupName !== deletedGroupName
+          //   );
+          //   return {
+          //     ...user,
+          //     group: updatedGroup,
+          //   };
+          // }
+          if (user.group && user.group.some((groupObj: { [key: string]: string }) => groupObj[action.payload.id])) {
+            const updatedGroup = user.group.filter((groupObj: { [key: string]: string }) => !groupObj[action.payload.id]);
             return {
               ...user,
               group: updatedGroup,
