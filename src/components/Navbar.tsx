@@ -27,6 +27,11 @@ const Navbar: React.FC = () => {
                 </Link>
               </li>
               <li className="nav-item">
+                <Link to="/group" className="nav-link">
+                  Create Group
+                </Link>
+              </li>
+              <li className="nav-item">
                 <Link to="/read" className="nav-link">
                   All Post ({allusers.length})
                 </Link>

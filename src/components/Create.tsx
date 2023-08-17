@@ -28,7 +28,6 @@ const Create: React.FC = () => {
   };
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("users...", users);
     dispatch(createUser(users));
     navigate("/read");
   };

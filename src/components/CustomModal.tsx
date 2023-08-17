@@ -19,7 +19,6 @@ const CustomModal: React.FC<CustomModalProps> = ({ id, setShowPopup }) => {
   const allusers = useSelector((state: RootState) => state.userDetail.users);
 
   const singleUser = allusers.filter((ele: User) => ele.id === id);
-  console.log("singleuser", singleUser);
 
   if (singleUser.length === 0) {
     return null; // Return null if no user is found with the specified ID
