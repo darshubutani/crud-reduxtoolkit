@@ -1,34 +1,45 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { updateUser } from "../features/userDetailSlice";
+import { updateUser } from "../redux/userDetailSlice";
+import { RootState , AppDispatch} from "../app/store";
 
-const Update = () => {
-  const { id } = useParams();
-  const dispatch = useDispatch();
+interface User {
+    id: string;
+    name: string;
+    email: string;
+    age: number;
+    gender: "Male" | "Female";
+  }
+
+const Update: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const [updateData, setUpdateData] = useState();
+  const [updateData, setUpdateData] = useState<User | undefined>();
 
-  const { users, loading } = useSelector((state) => state.app);
+  const { users } = useSelector((state: RootState) => state.userDetail);
 
   useEffect(() => {
     if (id) {
       const singleUser = users.filter((ele) => ele.id === id);
       setUpdateData(singleUser[0]);
     }
-  }, []);
+  }, [id, users]);
 
-  const newData = (e) => {
-    setUpdateData({ ...updateData, [e.target.name]: e.target.value });
+  const newData = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (updateData) {
+      setUpdateData({ ...updateData, [e.target.name]: e.target.value });
+    }
   };
 
-  console.log("updated data", updateData);
-
-  const handleUpdate = (e) => {
+  const handleUpdate = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(updateUser(updateData));
-    navigate("/read");
+    if (updateData) {
+      dispatch(updateUser(updateData));
+      navigate("/read");
+    }
   };
 
   return (
@@ -41,7 +52,7 @@ const Update = () => {
             type="text"
             name="name"
             className="form-control"
-            value={updateData && updateData.name}
+            value={updateData?.name || ""}
             onChange={newData}
           />
         </div>
@@ -51,7 +62,7 @@ const Update = () => {
             type="email"
             name="email"
             className="form-control"
-            value={updateData && updateData.email}
+            value={updateData?.email || ""}
             onChange={newData}
           />
         </div>
@@ -61,7 +72,7 @@ const Update = () => {
             type="text"
             name="age"
             className="form-control"
-            value={updateData && updateData.age}
+            value={updateData?.age || ""}
             onChange={newData}
           />
         </div>
@@ -71,7 +82,7 @@ const Update = () => {
             name="gender"
             value="Male"
             type="radio"
-            checked={updateData && updateData.gender === "Male"}
+            checked={updateData?.gender === "Male"}
             onChange={newData}
           />
           <label className="form-check-label">Male</label>
@@ -82,7 +93,7 @@ const Update = () => {
             name="gender"
             value="Female"
             type="radio"
-            checked={updateData && updateData.gender === "Female"}
+            checked={updateData?.gender === "Female"}
             onChange={newData}
           />
           <label className="form-check-label">Female</label>

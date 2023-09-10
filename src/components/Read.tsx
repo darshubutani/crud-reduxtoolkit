@@ -1,23 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { deleteUser, showUser } from "../features/userDetailSlice";
+import { deleteUser, showUser } from "../redux/userDetailSlice";
 import CustomModal from "./CustomModal";
+import { RootState, AppDispatch } from "../app/store";
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  age: number;
+  gender: "Male" | "Female";
+}
 
-const Read = () => {
-  const dispatch = useDispatch();
+const Read: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
 
-  const [id, setId] = useState();
+  const [id, setId] = useState<string | undefined>(); // Add type annotation
 
-  const [radioData, setRadioData] = useState("");
+  const [radioData, setRadioData] = useState<string>(""); // Add type annotation
 
-  const [showPopup, setShowPopup] = useState(false);
+  const [showPopup, setShowPopup] = useState<boolean>(false); // Add type annotation
 
-  const { users, loading, searchData } = useSelector((state) => state.app);
+  const { users, loading, searchData } = useSelector((state: RootState) => state.userDetail);
 
   useEffect(() => {
     dispatch(showUser());
-  }, []);
+  }, [dispatch]);
 
   if (loading) {
     return <h2>Loading</h2>;
@@ -25,12 +33,8 @@ const Read = () => {
 
   return (
     <div>
-      {showPopup && (
-        <CustomModal
-          id={id}
-          showPopup={showPopup}
-          setShowPopup={setShowPopup}
-        />
+      {showPopup && id  && (
+        <CustomModal id={id}  setShowPopup={setShowPopup} />
       )}
       <h2>All data</h2>
       <input
@@ -63,28 +67,25 @@ const Read = () => {
       <div>
         {users &&
           users
-            .filter((ele) => {
-              if (searchData.length === 0) {
-                return ele;
-              } else {
-                return ele.name
-                  .toLowerCase()
-                  .includes(searchData.toLowerCase());
-              }
+          .filter((ele: User) => {
+            if (searchData.length === 0) {
+              return true;
+            } else {
+              return ele.name.toLowerCase().includes(searchData.toLowerCase());
+            }
             })
-            .filter((ele) => {
-              if (radioData === "Male") {
+            .filter((ele: any) => {
+              if (radioData === "Male" || radioData === "Female") {
                 return ele.gender === radioData;
-              } else if (radioData === "Female") {
-                return ele.gender === radioData;
-              } else return ele;
+              } else return true; // Keep all elements
             })
 
-            .map((ele) => (
+            .map((ele: any) => (
               <div key={ele.id} className="card w-50 mx-auto my-2">
                 <div className="card-body">
                   <h5 className="card-title">{ele.name}</h5>
                   <h6 className="card-subtitle mb-2 text-muted">{ele.email}</h6>
+                  {/* {ele.group && <h6 className="card-subtitle mb-2 text-muted">{ele.group}</h6>} */}
                   <p className="card-text">{ele.gender}</p>
                   <button
                     className="card-link"
@@ -95,12 +96,12 @@ const Read = () => {
                   <Link to={`/edit/${ele.id}`} className="card-link">
                     Edit
                   </Link>
-                  <Link
+                  <button
                     onClick={() => dispatch(deleteUser(ele.id))}
                     className="card-link"
                   >
                     Delete
-                  </Link>
+                  </button>
                 </div>
               </div>
             ))}
